@@ -59,7 +59,7 @@ namespace PureMVC.Patterns
 		/// </summary>
 		/// <remarks>This method is thread safe</remarks>
 		/// <param name="notification">The <c>INotification</c> to pass to the interested object's notification method</param>
-		public virtual void NotifyObserver(INotification notification)
+		public virtual void NotifyObserver(INotification notification)//拿到消息内容
 		{
 			object context;
 			string method;
@@ -67,14 +67,15 @@ namespace PureMVC.Patterns
 			// Retrieve the current state of the object, then notify outside of our thread safe block
 			lock (m_syncRoot)
 			{
+				//这里通过属性拿到注册观察者的数据
 				context = NotifyContext;
 				method = NotifyMethod;
 			}
 
-			Type t = context.GetType();
-			BindingFlags f = BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase;
-			MethodInfo mi = t.GetMethod(method, f);
-			mi.Invoke(context, new object[] { notification });
+			Type t = context.GetType();//拿到观察者类型
+			BindingFlags f = BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase;//设置反射限制
+			MethodInfo mi = t.GetMethod(method, f);//查找名称为method的方法
+             mi.Invoke(context, new object[] { notification });//执行该方法 context 为调用该方法的实例   后面的数组为方法的参数为消息内容
 		}
 
 		/// <summary>

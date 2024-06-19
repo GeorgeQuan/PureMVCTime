@@ -61,14 +61,14 @@ namespace PureMVC.Core
 		/// </summary>
 		/// <param name="proxy">An <c>IProxy</c> to be held by the <c>Model</c></param>
 		/// <remarks>This method is thread safe and needs to be thread safe in all implementations.</remarks>
-		public virtual void RegisterProxy(IProxy proxy)
+		public virtual void RegisterProxy(IProxy proxy)//注册代理
 		{
 			lock (m_syncRoot)
 			{
-				m_proxyMap[proxy.ProxyName] = proxy;
+				m_proxyMap[proxy.ProxyName] = proxy;//存入字典
 			}
 
-			proxy.OnRegister();
+			proxy.OnRegister();//调用回调
 		}
 
 		/// <summary>

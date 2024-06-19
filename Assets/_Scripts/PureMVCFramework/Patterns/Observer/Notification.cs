@@ -31,7 +31,7 @@ namespace PureMVC.Patterns
         /// Constructs a new notification with the specified name, default body and type
         /// </summary>
         /// <param name="name">The name of the <c>Notification</c> instance</param>
-        public Notification(string name)
+        public Notification(string name)//创建通知重载,消息号,消息内容,消息类型
             : this(name, null, null)
 		{ }
 

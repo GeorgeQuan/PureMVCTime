@@ -74,7 +74,7 @@ namespace PureMVC.Patterns
 		/// List the <c>INotification</c> names this <c>Mediator</c> is interested in being notified of
 		/// </summary>
 		/// <returns>The list of <c>INotification</c> names </returns>
-		public virtual IList<string> ListNotificationInterests()
+		public virtual IList<string> ListNotificationInterests()//绑定消息号方法
 		{
 			return new List<string>();
 		}
@@ -88,14 +88,14 @@ namespace PureMVC.Patterns
 		///        Typically this will be handled in a switch statement, with one 'case' entry per <c>INotification</c> the <c>Mediator</c> is interested in. 
 		///     </para>
 		/// </remarks>
-		public virtual void HandleNotification(INotification notification)
+		public virtual void HandleNotification(INotification notification)//接收消息方法
 		{
 		}
 
 		/// <summary>
 		/// Called by the View when the Mediator is registered
 		/// </summary>
-		public virtual void OnRegister()
+		public virtual void OnRegister()//中介者注册完的回调
 		{
 		}
 

@@ -41,10 +41,10 @@ namespace PureMVC.Patterns
         /// <param name="notificationName">The name of the notiification to send</param>
         /// <remarks>Keeps us from having to construct new notification instances in our implementation code</remarks>
 		/// <remarks>This method is thread safe</remarks>
-		public virtual void SendNotification(string notificationName) 
+		public virtual void SendNotification(string notificationName) //接收消息号
 		{
 			// The Facade SendNotification is thread safe, therefore this method is thread safe.
-			m_facade.SendNotification(notificationName);
+			m_facade.SendNotification(notificationName);//调用单例外观的发送消息方法
 		}
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace PureMVC.Patterns
         /// <param name="body">The body of the notification</param>
         /// <remarks>Keeps us from having to construct new notification instances in our implementation code</remarks>
 		/// <remarks>This method is thread safe</remarks>
-		public virtual void SendNotification(string notificationName, object body)
+		public virtual void SendNotification(string notificationName, object body)//重载数据
 		{
 			// The Facade SendNotification is thread safe, therefore this method is thread safe.
 			m_facade.SendNotification(notificationName, body);
@@ -95,7 +95,7 @@ namespace PureMVC.Patterns
 		/// <summary>
         /// Local reference to the Facade Singleton
         /// </summary>
-		private IFacade m_facade = PureMVC.Patterns.Facade.Instance;
+		private IFacade m_facade = PureMVC.Patterns.Facade.Instance;//获取外观单例
 
 		#endregion
 	}

@@ -61,19 +61,19 @@ namespace PureMVC.Core
 		/// <summary>
 		/// Register an <c>IObserver</c> to be notified of <c>INotifications</c> with a given name
 		/// </summary>
-		/// <param name="notificationName">The name of the <c>INotifications</c> to notify this <c>IObserver</c> of</param>
-		/// <param name="observer">The <c>IObserver</c> to register</param>
+		/// <param name="notificationName"> 消息号 The name of the <c>INotifications</c> to notify this <c>IObserver</c> of</param>
+		/// <param name="observer">观察者实例 The <c>IObserver</c> to register</param>
 		/// <remarks>This method is thread safe and needs to be thread safe in all implementations.</remarks>
 		public virtual void RegisterObserver(string notificationName, IObserver observer)
 		{
 			lock (m_syncRoot)
 			{
-				if (!m_observerMap.ContainsKey(notificationName))
+				if (!m_observerMap.ContainsKey(notificationName))//判断是否有这个消息号
 				{
-					m_observerMap[notificationName] = new List<IObserver>();
+					m_observerMap[notificationName] = new List<IObserver>();//没有就创建一个
 				}
 
-				m_observerMap[notificationName].Add(observer);
+				m_observerMap[notificationName].Add(observer);//吧观察者实例添加进去,这里看上去可以一个消息对应多个观察者也就是命令
 			}
 		}
 
@@ -85,16 +85,16 @@ namespace PureMVC.Core
 		/// <para>All previously attached <c>IObservers</c> for this <c>INotification</c>'s list are notified and are passed a reference to the <c>INotification</c> in the order in which they were registered</para>
 		/// </remarks>
 		/// <remarks>This method is thread safe and needs to be thread safe in all implementations.</remarks>
-		public virtual void NotifyObservers(INotification notification)
+		public virtual void NotifyObservers(INotification notification)//拿到消息内容
 		{
-			IList<IObserver> observers = null;
+			IList<IObserver> observers = null;//创建该消息号注册的所有的观察者容器
 
 			lock (m_syncRoot)
 			{
-				if (m_observerMap.ContainsKey(notification.Name))
+				if (m_observerMap.ContainsKey(notification.Name))//判断是否包含消息号
 				{
 					// Get a reference to the observers list for this notification name
-					IList<IObserver> observers_ref = m_observerMap[notification.Name];
+					IList<IObserver> observers_ref = m_observerMap[notification.Name];//拿到该消息号注册的所有观察者
 					// Copy observers from reference array to working array, 
 					// since the reference array may change during the notification loop
 					observers = new List<IObserver>(observers_ref);
@@ -102,13 +102,13 @@ namespace PureMVC.Core
 			}
 
 			// Notify outside of the lock
-			if (observers != null)
+			if (observers != null)//判断是否有观察者注册了该消息号
 			{
 				// Notify Observers from the working array				
-				for (int i = 0; i < observers.Count; i++)
+				for (int i = 0; i < observers.Count; i++)//遍历所有观察者
 				{
-					IObserver observer = observers[i];
-					observer.NotifyObserver(notification);
+					IObserver observer = observers[i];//拿到观察者
+					observer.NotifyObserver(notification);//调用观察者内通知观察者的方法
 				}
 			}
 		}
@@ -163,35 +163,35 @@ namespace PureMVC.Core
 		///     <para>If the <c>IMediator</c> returns any <c>INotification</c> names to be notified about, an <c>Observer</c> is created encapsulating the <c>IMediator</c> instance's <c>handleNotification</c> method and registering it as an <c>Observer</c> for all <c>INotifications</c> the <c>IMediator</c> is interested in</para>
 		/// </remarks>
 		/// <remarks>This method is thread safe and needs to be thread safe in all implementations.</remarks>
-		public virtual void RegisterMediator(IMediator mediator)
+		public virtual void RegisterMediator(IMediator mediator)//注册中介者
 		{
 			lock (m_syncRoot)
 			{
 				// do not allow re-registration (you must to removeMediator fist)
-				if (m_mediatorMap.ContainsKey(mediator.MediatorName)) return;
+				if (m_mediatorMap.ContainsKey(mediator.MediatorName)) return;//判断是否包含
 
 				// Register the Mediator for retrieval by name
-				m_mediatorMap[mediator.MediatorName] = mediator;
+				m_mediatorMap[mediator.MediatorName] = mediator;//保存中介者实例
 
 				// Get Notification interests, if any.
 				IList<string> interests = mediator.ListNotificationInterests();  ///注册Mediator时可以从被注册的mediator里拿到这个mediator所关注的一些消息的名字列表
 
 				// Register Mediator as an observer for each of its notification interests
-				if (interests.Count > 0)
+				if (interests.Count > 0)//判断是否有消息
 				{
 					// Create Observer
-					IObserver observer = new Observer("handleNotification", mediator);
+					IObserver observer = new Observer("handleNotification", mediator);//创建观察者
 
 					// Register Mediator as Observer for its list of Notification interests
-					for (int i = 0; i < interests.Count; i++)
+					for (int i = 0; i < interests.Count; i++)//遍历消息容器
 					{
-						RegisterObserver(interests[i].ToString(), observer);
+						RegisterObserver(interests[i].ToString(), observer);//调用添加消息方法
 					}
 				}
 			}
 
 			// alert the mediator that it has been registered
-			mediator.OnRegister();
+			mediator.OnRegister();//通知中介已经注册了
 		}
 
 		/// <summary>
@@ -313,7 +313,7 @@ namespace PureMVC.Core
 		/// <summary>
         /// Mapping of Mediator names to Mediator instances
         /// </summary>
-		protected IDictionary<string, IMediator> m_mediatorMap;
+		protected IDictionary<string, IMediator> m_mediatorMap;//存储中介者实例
 
         /// <summary>
         /// Mapping of Notification names to Observer lists

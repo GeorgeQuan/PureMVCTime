@@ -149,7 +149,7 @@ namespace PureMVC.Patterns
         /// </remarks>
         protected Facade() 
         {
-			InitializeFacade();
+			InitializeFacade();//调用初始化外观的方法
 		}
 
 		#endregion
@@ -165,7 +165,7 @@ namespace PureMVC.Patterns
 		/// </summary>
 		/// <param name="proxy">The <c>IProxy</c> to be registered with the <c>Model</c></param>
 		/// <remarks>This method is thread safe and needs to be thread safe in all implementations.</remarks>
-		public virtual void RegisterProxy(IProxy proxy)
+		public virtual void RegisterProxy(IProxy proxy)//注册代理
 		{
 			// The model is initialized in the constructor of the singleton, so this call should be thread safe.
 			// This method is thread safe on the model.
@@ -224,7 +224,7 @@ namespace PureMVC.Patterns
 		{
 			// The controller is initialized in the constructor of the singleton, so this call should be thread safe.
 			// This method is thread safe on the controller.
-			m_controller.RegisterCommand(notificationName, commandType);
+			m_controller.RegisterCommand(notificationName, commandType);//注册命令
 		}
 
 		/// <summary>
@@ -261,7 +261,7 @@ namespace PureMVC.Patterns
 		/// </summary>
 		/// <param name="mediator">A reference to the <c>IMediator</c> instance</param>
 		/// <remarks>This method is thread safe and needs to be thread safe in all implementations.</remarks>
-        public virtual void RegisterMediator(IMediator mediator)
+        public virtual void RegisterMediator(IMediator mediator)//注册中介者
 		{
 			// The view is initialized in the constructor of the singleton, so this call should be thread safe.
 			// This method is thread safe on the view.
@@ -317,11 +317,11 @@ namespace PureMVC.Patterns
 		/// <remarks>Usually you should just call sendNotification and pass the parameters, never having to construct the notification yourself.</remarks>
 		/// <param name="notification">The <c>INotification</c> to have the <c>View</c> notify observers of</param>
 		/// <remarks>This method is thread safe and needs to be thread safe in all implementations.</remarks>
-        public virtual void NotifyObservers(INotification notification)
+        public virtual void NotifyObservers(INotification notification)//拿到通知实例,通知内有本次消息的内容
 		{
 			// The view is initialized in the constructor of the singleton, so this call should be thread safe.
 			// This method is thread safe on the view.
-			m_view.NotifyObservers(notification);
+			m_view.NotifyObservers(notification);//调用View 通知观察者方法
 		}
 
 		#endregion
@@ -336,9 +336,9 @@ namespace PureMVC.Patterns
 		/// <param name="notificationName">The name of the notiification to send</param>
 		/// <remarks>Keeps us from having to construct new notification instances in our implementation code</remarks>
 		/// <remarks>This method is thread safe and needs to be thread safe in all implementations.</remarks>
-        public virtual void SendNotification(string notificationName)
+        public virtual void SendNotification(string notificationName)//接收消息号
 		{
-			NotifyObservers(new Notification(notificationName));
+			NotifyObservers(new Notification(notificationName));//创建通知实例,并调用通知观察者方法
 		}
 
 		/// <summary>
@@ -348,7 +348,7 @@ namespace PureMVC.Patterns
 		/// <param name="body">The body of the notification</param>
 		/// <remarks>Keeps us from having to construct new notification instances in our implementation code</remarks>
 		/// <remarks>This method is thread safe and needs to be thread safe in all implementations.</remarks>
-        public virtual void SendNotification(string notificationName, object body)
+        public virtual void SendNotification(string notificationName, object body)//数据重载
 		{
 			NotifyObservers(new Notification(notificationName, body));
 		}
@@ -409,7 +409,7 @@ namespace PureMVC.Patterns
         /// <remarks>
         /// <para>Called automatically by the constructor. Override in your subclass to do any subclass specific initializations. Be sure to call <c>base.initializeFacade()</c>, though</para>
         /// </remarks>
-        protected virtual void InitializeFacade()
+        protected virtual void InitializeFacade()//初始化MVC
         {
 			InitializeModel();
 			InitializeController();

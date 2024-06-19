@@ -50,10 +50,10 @@ namespace PureMVC.Core
         ///         Factory method <c>Controller.getInstance()</c>
         ///     </para>
         /// </remarks>
-		protected Controller()
+		protected Controller()//初始化controller 时
 		{
-			m_commandMap = new Dictionary<string, Type>();	
-			InitializeController();
+			m_commandMap = new Dictionary<string, Type>();	//初始化消息容器
+			InitializeController();//初始化View
 		}
 
 		#endregion
@@ -68,21 +68,21 @@ namespace PureMVC.Core
 		/// </summary>
 		/// <param name="note">An <c>INotification</c></param>
 		/// <remarks>This method is thread safe and needs to be thread safe in all implementations.</remarks>
-		public virtual void ExecuteCommand(INotification note)
+		public virtual void ExecuteCommand(INotification note)//观察者观察方法 参数为消息内容
 		{
 			Type commandType = null;
 
 			lock (m_syncRoot)
 			{
-				if (!m_commandMap.ContainsKey(note.Name)) return;
-				commandType = m_commandMap[note.Name];
+				if (!m_commandMap.ContainsKey(note.Name)) return;//判断是否注册过该消息
+				commandType = m_commandMap[note.Name];//拿到该命令类型
 			}
 
 			object commandInstance = Activator.CreateInstance(commandType);  ///创建命令的实例  Activator.CreateInstance创建某个类型的实例的apI
 
-			if (commandInstance is ICommand)
+			if (commandInstance is ICommand)//判断命令是否继承ICommand 接口
 			{
-				((ICommand) commandInstance).Execute(note);
+				((ICommand) commandInstance).Execute(note);//调用命令方法
 			}
 		}
 
@@ -100,18 +100,18 @@ namespace PureMVC.Core
 		///     </para>
 		/// </remarks> 
 		/// <remarks>This method is thread safe and needs to be thread safe in all implementations.</remarks>
-		public virtual void RegisterCommand(string notificationName, Type commandType)
+		public virtual void RegisterCommand(string notificationName, Type commandType)//添加命令后
 		{
 			lock (m_syncRoot)
 			{
-				if (!m_commandMap.ContainsKey(notificationName))
+				if (!m_commandMap.ContainsKey(notificationName))//判断是否已经包含消息号,不包含
 				{
 					// This call needs to be monitored carefully. Have to make sure that RegisterObserver
 					// doesn't call back into the controller, or a dead lock could happen.
-					m_view.RegisterObserver(notificationName, new Observer("ExecuteCommand", this));
+					m_view.RegisterObserver(notificationName, new Observer("ExecuteCommand", this));//添加进View 层的容器内
 				}
 
-				m_commandMap[notificationName] = commandType;
+				m_commandMap[notificationName] = commandType;//添加进命令的容器内
 			}
 		}
 
@@ -209,7 +209,7 @@ namespace PureMVC.Core
 		/// </remarks>
 		protected virtual void InitializeController()
 		{
-			m_view = View.Instance;
+			m_view = View.Instance;//获取View 实例
 		}
 
 		#endregion
@@ -224,7 +224,7 @@ namespace PureMVC.Core
         /// <summary>
         /// Mapping of Notification names to Command Class references
         /// </summary>
-        protected IDictionary<string, Type> m_commandMap;
+        protected IDictionary<string, Type> m_commandMap;//存储所有命令
 
         /// <summary>
         /// Singleton instance, can be sublcassed though....
